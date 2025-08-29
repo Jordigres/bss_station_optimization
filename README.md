@@ -3,7 +3,7 @@
 
 ## Overview
 
-This project implements an optimization framework for determining optimal locations of BSS stations. It combines spatial data analysis, graph theory, and metaheuristic optimization algorithms to solve the complex facility location problem while considering multiple urban factors. To prove its capabilities, it is applied to the city of Barcelona 
+This project implements an optimization framework for determining optimal locations of BSS stations. It combines spatial data analysis, graph theory, and metaheuristic optimization algorithms to solve the complex facility location problem while considering multiple urban factors. To prove its capabilities, it is applied to the city of Barcelona.
 
 ## Features
 
@@ -145,14 +145,11 @@ Analysis and visualization tools for optimization results:
 
 
 
-### Key Notebooks
+### Notebooks
 
-- **GA optimization**: `notebooks/5_GA.ipynb`
-- **Simulated Annealing**: `notebooks/simulated_annealing.ipynb`
-- **Results visualization**: `notebooks/12_results_plots.ipynb`
-- **Graph analysis**: `notebooks/8_graph_metrics.ipynb`
-- **Algorithm comparison**: `notebooks/8_GA_vs_MILP.ipynb`
+The repository includes Jupyter notebooks for demonstration and exploration, with step-by-step pipeline examples, interactive parameter tuning, and rich visualizations. 
 
+The visualizations of the paper where generated in these notebooks.
 
 ## Output
 
