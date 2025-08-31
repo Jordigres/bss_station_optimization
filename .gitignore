@@ -1,3 +1,6 @@
 data/*
 *.html
 simulated_annealing.ipynb
+*pycache*
+visualizations/*
+*cache*
