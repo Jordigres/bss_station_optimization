@@ -59,7 +59,7 @@ This project implements an optimization framework for determining optimal locati
 - **Python 3.11+** (required for local installation)
 - **Docker** (recommended for reproducible environments)
 
-### Option 1: Docker Installation (Recommended)
+### Option 1: Docker Installation
 
 The project includes a complete Docker setup for reproducible environments:
 
