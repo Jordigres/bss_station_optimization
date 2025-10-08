@@ -66,10 +66,55 @@ def load_city_data(city):
     return G, distance_matrix, id_to_idx, idx_to_id, city_boundary
 
 
+def add_north_arrow(ax, size=0.05, location=(0.9, 0.15), linewidth=1, fontsize=12, color='k'):
+    """
+    Adds a north arrow to the given axes.
+    """
+    ax.annotate(
+        '', 
+        xy=(location[0], location[1]), 
+        xytext=(location[0], location[1] - size * 1.2),  # Make arrow line longer
+        xycoords='axes fraction',
+        textcoords='axes fraction',
+        arrowprops=dict(facecolor=color, edgecolor=color, width=linewidth, headwidth=8, headlength=12),
+        ha='center', va='center'
+    )
+    ax.text(location[0], location[1] - size * 1.3 - 0.018, 'N', transform=ax.transAxes,
+            ha='center', va='center', fontsize=fontsize, fontweight='bold', color=color)
+    
+
+def add_scalebar(ax, length, location=(0.1, 0.05), linewidth=3, units='m', fontsize=14, color='k'):
+    """
+    Adds a scale bar to the map.
+    """
+    # Get axis limits
+    xlim = ax.get_xlim()
+    ylim = ax.get_ylim()
+    
+    # Calculate start and end points in data coordinates
+    x_start = xlim[0] + location[0] * (xlim[1] - xlim[0])
+    y_start = ylim[0] + location[1] * (ylim[1] - ylim[0])
+    x_end = x_start + length
+    
+    # Draw the scale bar
+    ax.plot([x_start, x_end], [y_start, y_start], color=color, linewidth=linewidth, solid_capstyle='butt')
+
+    # Add the label - convert to display units if needed
+    if units == 'km':
+        display_length = length / 1000
+        label_text = f'{display_length:.0f} {units}'
+    else:
+        label_text = f'{int(length)} {units}'
+    
+    ax.text((x_start + x_end) / 2, y_start - 0.01 * (ylim[1] - ylim[0]), label_text,
+            ha='center', va='top', fontsize=fontsize, color=color, fontweight='bold')
+
+
 def plot_graph_with_highlighted_nodes(G, city_boundary, title_string, ax,
                                     selected_nodes=False, 
                                     selected_node_color='red',
-                                    selected_node_size=5):
+                                    selected_node_size=5,
+                                    show_arrow_scale=True):
     """
     Plots the graph with highlighted nodes based on selection status.
     
@@ -115,6 +160,11 @@ def plot_graph_with_highlighted_nodes(G, city_boundary, title_string, ax,
     
     # Turn off axis
     ax.set_axis_off()
+    
+    # Add north arrow and scale bar only if requested
+    if show_arrow_scale:
+        add_north_arrow(ax, size=0.05, location=(0.158, 0.19), linewidth=1, fontsize=8)
+        add_scalebar(ax, length=2000, location=(0.1, 0.075), linewidth=3, units='km', fontsize=8, color='k')
     
     return ax
 
@@ -181,7 +231,7 @@ def process_city(city):
                    horizontalalignment='center', verticalalignment='center')
             continue
         
-        ho.validate_solution(nodes_list, distance_matrix, id_to_idx, n_stations, STATION_MIN_DISTANCE)
+        ho.validate_solution(nodes_list, distance_matrix, id_to_idx, idx_to_id, n_stations, STATION_MIN_DISTANCE)
 
         # Mark nodes in graph
         G_marked = he.mark_graph(G.copy(), nodes_list)
@@ -199,7 +249,8 @@ def process_city(city):
             title_string, 
             ax=ax,
             selected_node_size=1,
-            selected_node_color='red'
+            selected_node_color='red',
+            show_arrow_scale=(col_idx == 0)  # Only show arrow and scale for first subplot
         )
         
         # Add letter label in top left corner
