@@ -41,13 +41,8 @@ def categorize_nodes_by_connectivity(G):
     }
 
     print(f"There are {len(G.nodes())} nodes in the graph")
-    
-    node_count = 0
+
     for node in G.nodes():
-        node_count += 1
-        if node_count % 1000 == 0:
-            print(f"Processed {node_count} nodes")
-            
         has_outgoing = False
         has_incoming = False
         
@@ -255,9 +250,8 @@ def plot_bad_nodes(G, bad_nodes, root):
     Plot the bad nodes in the graph.
     """
     plot_name = f"{root}{VISUALIZATIONS}/bike_graph_bad_nodes.png"
-    
-    # if os.path.exists(plot_name):
-    #     return None
+    if os.path.exists(plot_name):
+        return None
 
     bcn_boundary = dl.load_bcn_boundary()
     fig, ax = plt.subplots(figsize=(20, 20))
@@ -434,5 +428,5 @@ def fix_directed_graph(G: nx.MultiDiGraph, nodes_gdf: gpd.GeoDataFrame, root: st
     # Check if the graph is now fully connected
     bad_nodes = categorize_nodes_by_connectivity(G_unified)
     _ = check_strong_connectivity(G_unified)
-
+   
     return G_unified

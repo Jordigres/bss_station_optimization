@@ -239,12 +239,12 @@ def download_residential_buildings(location, save=True, save_fig=True, epsg=2583
     location_str = location.replace(', ', '_')
     if 'Barcelona' in location:
         location_str = 'Barcelona_Spain'
-        residential_buildings_filepath = f"{root}/{RAW_OSM}/{location_str}_residential_buildings.csv"
+    residential_buildings_filepath = f"{root}/{RAW_OSM}/{location_str}_residential_buildings.csv"
     residential_buildings_visualization_filepath = f"{root}/{VISUALIZATIONS}/residential_buildings/{location_str}_residential_buildings.png"
 
-    # if os.path.exists(residential_buildings_filepath):
-    #     print(f"\tResidential buildings already exist in: {residential_buildings_filepath}")
-    #     return None
+    if os.path.exists(residential_buildings_filepath):
+        print(f"\tResidential buildings already exist in: {residential_buildings_filepath}")
+        return None
 
     # Download all building footprints and convert to GeoDataFrame
     tags = {
@@ -318,7 +318,6 @@ def download_residential_buildings(location, save=True, save_fig=True, epsg=2583
         'addr:postcode': 'postcode',
         'name': 'name',
         'geometry': 'geometry'}, inplace=True)
-
 
 
     if save:
