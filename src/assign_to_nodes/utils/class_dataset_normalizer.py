@@ -313,6 +313,37 @@ class DatasetNormalizer:
             ax_map_orig.set_title("Original", fontsize=10)
             ax_map_orig.axis('off')
             
+            # Add north arrow and scale bar only to the first map of the second row
+            if i == 0:  # First column only
+                # North arrow
+                fontsize = 13
+                ax_map_orig.annotate(
+                    '', 
+                    xy=(0.12, 0.295),  # Arrow head position
+                    xytext=(0.12, 0.232),  # Arrow stick base position - increased distance
+                    xycoords='axes fraction',
+                    textcoords='axes fraction',
+                    arrowprops=dict(facecolor='black', edgecolor='black', width=1, headwidth=10, headlength=15),
+                    ha='center', va='center'
+                )
+                ax_map_orig.text(0.12, 0.21, 'N', transform=ax_map_orig.transAxes, 
+                        ha='center', va='center', fontsize=fontsize, fontweight='bold', color='black')
+                
+                # Scale bar
+                xlim = ax_map_orig.get_xlim()
+                ylim = ax_map_orig.get_ylim()
+                
+                # Calculate scale bar position
+                x_center = xlim[0] + 0.12 * (xlim[1] - xlim[0])  # Center point
+                x_start = x_center - 1000  # 1 km to left of center
+                x_end = x_center + 1000    # 1 km to right of center
+                y_scale = ylim[0] + 0.18 * (ylim[1] - ylim[0])  # Below arrow
+                
+                # Draw the scale bar
+                ax_map_orig.plot([x_start, x_end], [y_scale, y_scale], color='black', linewidth=3, solid_capstyle='butt')
+                ax_map_orig.text(x_center, y_scale - 0.01 * (ylim[1] - ylim[0]), '2 km',
+                        ha='center', va='top', fontsize=fontsize, color='black', fontweight='bold')
+            
             # Create normalized map subplot (bottom row)
             ax_map_norm = fig.add_subplot(gs[2, i])
             

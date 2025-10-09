@@ -42,7 +42,12 @@ def categorize_nodes_by_connectivity(G):
 
     print(f"There are {len(G.nodes())} nodes in the graph")
     
+    node_count = 0
     for node in G.nodes():
+        node_count += 1
+        if node_count % 1000 == 0:
+            print(f"Processed {node_count} nodes")
+            
         has_outgoing = False
         has_incoming = False
         
@@ -250,8 +255,9 @@ def plot_bad_nodes(G, bad_nodes, root):
     Plot the bad nodes in the graph.
     """
     plot_name = f"{root}{VISUALIZATIONS}/bike_graph_bad_nodes.png"
-    if os.path.exists(plot_name):
-        return None
+    
+    # if os.path.exists(plot_name):
+    #     return None
 
     bcn_boundary = dl.load_bcn_boundary()
     fig, ax = plt.subplots(figsize=(20, 20))
@@ -276,8 +282,42 @@ def plot_bad_nodes(G, bad_nodes, root):
         edge_alpha=0.7,
         bgcolor='white'
     )
+    
+    # North arrow (adjusted parameters, moved away from map edge and centered)
+    fontsize = 15
+    ax.annotate(
+        '', 
+        xy=(0.12, 0.25), 
+        xytext=(0.12, 0.25 - 0.05 * 0.8), 
+        xycoords='axes fraction',
+        textcoords='axes fraction',
+        arrowprops=dict(facecolor='black', edgecolor='black', width=1, headwidth=10, headlength=15),
+        ha='center', va='center'
+    )
+    
+    # Scale bar (positioned below arrow, centered with 'N')
+    xlim = ax.get_xlim()
+    ylim = ax.get_ylim()
+    
+    # Calculate scale bar position - centered with arrow
+    x_center = xlim[0] + 0.12 * (xlim[1] - xlim[0])  # Center point
+    x_start = x_center - 1000  # 1 km to left of center
+    x_end = x_center + 1000    # 1 km to right of center
+    y_scale = ylim[0] + 0.18 * (ylim[1] - ylim[0])  # Below arrow
+    
+    # Draw the scale bar
+    ax.plot([x_start, x_end], [y_scale, y_scale], color='black', linewidth=3, solid_capstyle='butt')
+    
+    # 'N' label positioned above scale bar, centered with it
+    ax.text(0.12, 0.20, 'N', transform=ax.transAxes,  # Centered with scale bar
+            ha='center', va='center', fontsize=fontsize, fontweight='bold', color='black')
+    
+    # Add "2 km" label below the scale bar
+    ax.text(x_center, y_scale - 0.01 * (ylim[1] - ylim[0]), '2 km',
+            ha='center', va='top', fontsize=fontsize, color='black', fontweight='bold')
+
     ax.axis('off')
-    plt.savefig(f"{root}{VISUALIZATIONS}/bike_graph_bad_nodes.png", dpi=300)
+    plt.savefig(plot_name, dpi=300)
     plt.close()
 
 
@@ -394,5 +434,5 @@ def fix_directed_graph(G: nx.MultiDiGraph, nodes_gdf: gpd.GeoDataFrame, root: st
     # Check if the graph is now fully connected
     bad_nodes = categorize_nodes_by_connectivity(G_unified)
     _ = check_strong_connectivity(G_unified)
-   
+
     return G_unified

@@ -237,12 +237,14 @@ def download_residential_buildings(location, save=True, save_fig=True, epsg=2583
     - Visualization: {root}/{VISUALIZATIONS}/residential_buildings/{location}_residential_buildings.png
     """
     location_str = location.replace(', ', '_')
-    residential_buildings_filepath = f"{root}/{RAW_OSM}/{location_str}_residential_buildings.csv"
+    if 'Barcelona' in location:
+        location_str = 'Barcelona_Spain'
+        residential_buildings_filepath = f"{root}/{RAW_OSM}/{location_str}_residential_buildings.csv"
     residential_buildings_visualization_filepath = f"{root}/{VISUALIZATIONS}/residential_buildings/{location_str}_residential_buildings.png"
 
-    if os.path.exists(residential_buildings_filepath):
-        print(f"\tResidential buildings already exist in: {residential_buildings_filepath}")
-        return None
+    # if os.path.exists(residential_buildings_filepath):
+    #     print(f"\tResidential buildings already exist in: {residential_buildings_filepath}")
+    #     return None
 
     # Download all building footprints and convert to GeoDataFrame
     tags = {
@@ -318,6 +320,7 @@ def download_residential_buildings(location, save=True, save_fig=True, epsg=2583
         'geometry': 'geometry'}, inplace=True)
 
 
+
     if save:
         Path(RAW_OSM).mkdir(parents=True, exist_ok=True)
         gdf_residential_buildings.sort_values(by=['building', 'amenity'], inplace=True)
@@ -334,6 +337,32 @@ def download_residential_buildings(location, save=True, save_fig=True, epsg=2583
         gdf_residential_buildings.plot(ax=ax, markersize=markersize)
         bcn_boundary.boundary.plot(ax=ax, color='black', alpha=1, linewidth=linewidth)
         ax.set_axis_off()
+
+        # North arrow
+        fontsize = 15
+        ax.annotate(
+            '', 
+            xy=(0.12, 0.25), 
+            xytext=(0.12, 0.25 - 0.05 * 0.8), 
+            xycoords='axes fraction',
+            textcoords='axes fraction',
+            arrowprops=dict(facecolor='black', edgecolor='black', width=1, headwidth=10, headlength=15),
+            ha='center', va='center'
+        )
+        ax.text(0.12, 0.20, 'N', transform=ax.transAxes, ha='center', 
+            va='center', fontsize=fontsize, fontweight='bold', color='black')
+        
+        # Scale bar
+        xlim = ax.get_xlim()
+        ylim = ax.get_ylim()
+        x_center = xlim[0] + 0.12 * (xlim[1] - xlim[0])  # Center point
+        x_start = x_center - 1000  # 1 km to left of center
+        x_end = x_center + 1000    # 1 km to right of center
+        y_scale = ylim[0] + 0.18 * (ylim[1] - ylim[0])  # Below arrow
+        
+        ax.plot([x_start, x_end], [y_scale, y_scale], color='black', linewidth=3, solid_capstyle='butt')
+        ax.text(x_center, y_scale - 0.01 * (ylim[1] - ylim[0]), '2 km',
+            ha='center', va='top', fontsize=fontsize, color='black', fontweight='bold')
         
         Path(VISUALIZATIONS).mkdir(parents=True, exist_ok=True)
         plt.savefig(residential_buildings_visualization_filepath, dpi=300, bbox_inches='tight')
