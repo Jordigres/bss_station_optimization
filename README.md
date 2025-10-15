@@ -172,8 +172,3 @@ The framework has been extensively tested on Barcelona's Bicing system, demonstr
 - **Multi-modal integration**: 260+ km bike lanes, 8 metro lines, 6 tram lines, 100+ bus routes
 
 The Barcelona implementation showcases the framework's ability to handle real-world complexity while maintaining computational efficiency and solution quality.
-
-## License
-
-This software is licensed under the Creative Commons Attribution-NonCommercial 4.0 International (CC BY-NC 4.0) License.
-You are free to use, modify, and share this code for non-commercial purposes, provided that proper credit is given to the original author.
